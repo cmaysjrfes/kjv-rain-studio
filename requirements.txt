@@ -1,0 +1,23 @@
+# ---- Core ----
+python-dotenv>=1.0
+PyYAML>=6.0
+requests>=2.31
+rich>=13.7
+numpy>=1.26
+Pillow>=10.3
+
+# ---- YouTube / scraping ----
+google-api-python-client>=2.130
+google-auth>=2.29
+google-auth-oauthlib>=1.2
+google-auth-httplib2>=0.2
+yt-dlp>=2024.8.6
+
+# ---- Audio (Agent 2, Phase 3) ----
+soundfile>=0.12
+# Local TTS engines - install the one you use:
+# kokoro>=0.9          # Kokoro-82M  (pip install kokoro ; needs espeak-ng)
+# piper-tts>=1.2       # Piper
+# chatterbox-tts>=0.1  # Chatterbox
+
+# FFmpeg >= 6.0 must be on PATH (brew install ffmpeg / apt install ffmpeg)

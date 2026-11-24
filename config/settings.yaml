@@ -1,0 +1,72 @@
+# Tunable, non-secret settings. Secrets live in .env.
+
+competitor_research:
+  search_queries:
+    - "8 hour KJV bible sleep rain"
+    - "KJV scripture rain sounds sleep black screen"
+    - "bible verses for sleep rain 10 hours"
+    - "King James bible reading rain sleep"
+    - "psalms for sleep rain thunder 8 hours"
+    - "KJV audio bible rain dark screen"
+  max_results_per_query: 50       # search.list page size (max 50)
+  min_video_duration_s: 28800      # only learn from 8h+ videos
+  top_channels: 15                 # channels kept after ranking
+  videos_per_channel: 30           # recent uploads sampled for cadence/titles
+  thumbnails_to_analyze: 60
+  request_timeout_s: 20
+
+brand:
+  # Candidate names Agent 1 checks for distinctiveness against competitors
+  name_candidates:
+    - "Still Waters Night Rain"
+    - "Lamp Unto My Feet Sleep"
+    - "Quiet Psalms & Rain"
+    - "Cedar Cabin Scripture"
+    - "Night Watch KJV"
+    - "Restful Waters Bible Sleep"
+  # Candidate palettes (bg, mid, accent, text). Agent 1 picks the one most
+  # visually distant from competitor banner/thumbnail palettes.
+  palettes:
+    ember_cabin:    ["#0B0A0F", "#1C1820", "#E0A458", "#F3EBDD"]
+    deep_slate:     ["#07090D", "#161C26", "#8FB3D9", "#E8EEF5"]
+    moss_lantern:   ["#080B09", "#152019", "#C9B36B", "#EEF0E6"]
+    plum_dusk:      ["#0C0910", "#1E1626", "#C79BD1", "#F1E9F4"]
+    copper_storm:   ["#0A0A0B", "#1B1D20", "#D07A4A", "#F2ECE6"]
+
+content:
+  duration_s: {min: 28800, max: 36000}
+  narration_window_s: {start: 0, end: 9000}     # hours 0-2.5
+  narration_crossfade_s: 90
+  loudness:
+    narration_lufs: -20
+    ambient_lufs: -26
+    true_peak_db: -2.0
+  min_episodes_between_book_reuse: 6
+  min_episodes_between_scene_reuse: 3
+  min_episodes_between_bed_reuse: 2
+  min_episodes_between_title_template_reuse: 4
+  min_episodes_between_thumb_template_reuse: 3
+
+render:
+  fps: 15
+  loop_seconds: 120                # seamless visual loop length, repeated by stream-copy
+  internal_resolution: [960, 540]  # procedural frames are upscaled + grained by FFmpeg
+  # [1920, 1080] default. [2560, 1440] makes YouTube serve its higher-quality VP9/AV1 encode at every
+  # resolution, which noticeably reduces banding in dark gradients (~+40% upload size).
+  output_resolution: [1920, 1080]
+  shorts_loop_seconds: 20
+  audio_bitrate: "192k"
+  resolution: [1920, 1080]
+  max_upload_bytes: 274877906944   # 256 GB YouTube cap
+  max_duration_s: 43200            # 12h YouTube cap (verified accounts)
+
+publishing:
+  category_id: "22"
+  default_language: "en"
+  processing_poll_max_checks: 40   # per run; videos.list costs 1 unit each
+  ab_rotate_after_hours: 72
+
+scaling:
+  est_bytes_per_episode: 14000000000   # peak local disk per episode (work files + final MP4)
+  min_free_disk_bytes: 30000000000
+  max_long_form_per_day: 1
