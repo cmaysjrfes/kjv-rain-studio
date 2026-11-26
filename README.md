@@ -15,6 +15,16 @@ cp .env.example .env        # add YOUTUBE_API_KEY (optional: yt-dlp is the fallb
 ```
 FFmpeg 6+ must be on PATH.
 
+## Kokoro TTS on an Intel Mac
+On Intel Macs, PyTorch stops at 2.2.2. That requires Python 3.10-3.12, `numpy<2` and `transformers<5`.
+```bash
+brew install python@3.11 ffmpeg espeak-ng
+python3.11 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt "kokoro>=0.9.4" "torch==2.2.2" "numpy<2" "transformers<5" soundfile
+python scripts/check_tts.py            # first run downloads the ~330 MB model; prints speed + episode estimate
+```
+Set `TTS_ENGINE=kokoro` and `KOKORO_VOICE=am_michael` in `.env`. For a deeper British voice, try `bm_george` or `bm_lewis`.
+
 ## Run
 ```bash
 python main.py --channel-page-only          # Agent 1: research, blueprints, brand kit

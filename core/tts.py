@@ -43,14 +43,25 @@ class KokoroEngine(TTSEngine):
     name = "kokoro"
     sample_rate = 24000
 
+    REPO_ID = "hexgrad/Kokoro-82M"
+
     def __init__(self, voice: str = "am_michael", speed: float = 0.88) -> None:
+        import sys
+
+        if sys.version_info >= (3, 13):
+            raise TTSError("Kokoro supports Python 3.10-3.12 only (this is "
+                           f"{sys.version_info.major}.{sys.version_info.minor}); recreate the venv with python3.11")
         try:
             from kokoro import KPipeline
         except ImportError as exc:
-            raise TTSError("Kokoro not installed: pip install kokoro soundfile (and espeak-ng)") from exc
+            raise TTSError(f"Kokoro import failed ({exc}). Install: pip install kokoro soundfile; brew/apt install "
+                           "espeak-ng. Intel Mac: also pip install 'numpy<2' 'transformers<5' (torch 2.2.2 limit)") \
+                from exc
+        if voice[:1] not in {"a", "b"}:
+            raise TTSError(f"KOKORO_VOICE={voice!r}: use an English voice (am_*/af_* American, bm_*/bf_* British)")
         self.voice = voice
         self.native_tempo = speed
-        self.pipeline = KPipeline(lang_code="b" if voice.startswith("b") else "a")
+        self.pipeline = KPipeline(lang_code=voice[0], repo_id=self.REPO_ID)
 
     @property
     def cache_key(self) -> str:
@@ -59,6 +70,8 @@ class KokoroEngine(TTSEngine):
     def synthesize(self, text: str) -> np.ndarray:
         parts = []
         for _, _, audio in self.pipeline(text, voice=self.voice, speed=self.native_tempo):
+            if audio is None:  # chunks with no speakable text yield no audio
+                continue
             arr = audio.detach().cpu().numpy() if hasattr(audio, "detach") else np.asarray(audio)
             parts.append(arr.astype(np.float32))
         if not parts:

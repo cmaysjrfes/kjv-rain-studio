@@ -230,6 +230,8 @@ class Orchestrator:
         if self.args.channel_page_only:
             return
         engine = self.s.tts_engine
+        if engine == "kokoro" and sys.version_info >= (3, 13):
+            raise PreflightError("Kokoro needs Python 3.10-3.12 (PyTorch wheels); recreate the venv with python3.11")
         pkg = TTS_PACKAGES.get(engine)
         if pkg and importlib.util.find_spec(pkg) is None:
             raise PreflightError(f"TTS_ENGINE={engine} but package '{pkg}' is not installed (see requirements.txt)")

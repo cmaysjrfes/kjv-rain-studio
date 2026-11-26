@@ -4,6 +4,8 @@ PyYAML>=6.0
 requests>=2.31
 rich>=13.7
 numpy>=1.26
+# Intel Macs: PyTorch stops at 2.2.2 there, which needs NumPy 1.x and transformers 4.x
+numpy<2; sys_platform == "darwin" and platform_machine == "x86_64"
 Pillow>=10.3
 
 # ---- YouTube / scraping ----
@@ -16,7 +18,8 @@ yt-dlp>=2024.8.6
 # ---- Audio (Agent 2, Phase 3) ----
 soundfile>=0.12
 # Local TTS engines - install the one you use:
-# kokoro>=0.9          # Kokoro-82M  (pip install kokoro ; needs espeak-ng)
+# kokoro>=0.9.4        # Kokoro-82M: Python 3.10-3.12 only; needs espeak-ng (brew install espeak-ng)
+#                      # Intel Mac:  pip install "kokoro>=0.9.4" "torch==2.2.2" "numpy<2" "transformers<5"
 # piper-tts>=1.2       # Piper
 # chatterbox-tts>=0.1  # Chatterbox
 
